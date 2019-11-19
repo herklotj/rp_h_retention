@@ -244,8 +244,27 @@ view: lk_h_retention {
     sql: ${TABLE}.ly_aa_membership ;;
   }
 
+  dimension: ly_aa_tenure_v3 {
+    label: "LY AA Tenure (3)"
+    type: tier
+    tiers: [0,1,2]
+    style: integer
+    sql: ${TABLE}.ly_aa_tenure ;;
+  }
+
   dimension: ly_aa_tenure {
-    type: number
+    label: "LY AA Tenure (5)"
+    type: tier
+    tiers: [0,1,2,3,4,5]
+    style: integer
+    sql: ${TABLE}.ly_aa_tenure ;;
+  }
+
+  dimension: ly_aa_tenure_v2 {
+    label: "LY AA Tenure (10)"
+    type: tier
+    tiers: [0,1,2,3,4,5,6,7,8,9,10]
+    style: integer
     sql: ${TABLE}.ly_aa_tenure ;;
   }
 
@@ -348,7 +367,9 @@ view: lk_h_retention {
       week,
       month,
       quarter,
-      year
+      year,
+      fiscal_quarter,
+      fiscal_year
     ]
     sql: ${TABLE}.policy_start_date ;;
   }
@@ -474,15 +495,7 @@ view: lk_h_retention {
   measure: non_aauicl_holding {
     label: "non-AAUICL Holding"
     type:  sum
-    sql: ${TABLE}.broker_hold_bds + ${TABLE}.broker_hold_cts ;;
-    filters: {
-      field: aauicl_hold_bds
-      value: "0"
-    }
-    filters: {
-      field: aauicl_hold_cts
-      value: "0"
-    }
+    sql: ${TABLE}.non_aauicl_holding_bds + ${TABLE}.non_aauicl_holding_cts ;;
   }
 
   measure: broker_written_bds {
@@ -544,15 +557,7 @@ view: lk_h_retention {
   measure: non_aauicl_written {
     label: "non-AAUICL Written Covers"
     type:  sum
-    sql: ${TABLE}.broker_ind_bds + ${TABLE}.broker_ind_cts ;;
-    filters: {
-      field: aauicl_ind_bds
-      value: "0"
-    }
-    filters: {
-      field: aauicl_ind_cts
-      value: "0"
-    }
+    sql: ${TABLE}.non_aauicl_written_bds + ${TABLE}.non_aauicl_written_cts ;;
   }
 
   measure: aauicl_retained_bds {
