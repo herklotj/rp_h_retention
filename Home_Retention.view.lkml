@@ -429,7 +429,7 @@ view: lk_h_retention {
     sql: ${TABLE}.uw_policy_no_ly ;;
   }
 
-### Measures ###
+### Measures for Calc ###
 
   measure: count {
     type: count
@@ -495,7 +495,7 @@ view: lk_h_retention {
   measure: non_aauicl_holding {
     label: "non-AAUICL Holding"
     type:  sum
-    sql: ${TABLE}.non_aauicl_holding_bds + ${TABLE}.non_aauicl_holding_cts ;;
+    sql: (${TABLE}.broker_hold_bds + ${TABLE}.broker_hold_cts) - (${TABLE}.aauicl_hold_bds + ${TABLE}.aauicl_hold_cts) ;;
   }
 
   measure: broker_written_bds {
@@ -557,7 +557,7 @@ view: lk_h_retention {
   measure: non_aauicl_written {
     label: "non-AAUICL Written Covers"
     type:  sum
-    sql: ${TABLE}.non_aauicl_written_bds + ${TABLE}.non_aauicl_written_cts ;;
+    sql: (${TABLE}.broker_ind_bds + ${TABLE}.broker_ind_cts) - (${TABLE}.aauicl_ind_bds + ${TABLE}.aauicl_ind_cts) ;;
   }
 
   measure: aauicl_retained_bds {
@@ -594,6 +594,10 @@ view: lk_h_retention {
       field: aauicl_hold_bds
       value: "0"
     }
+    filters: {
+      field: aauicl_ind_bds
+      value: "0"
+    }
   }
 
   measure: non_aauicl_retained_cts {
@@ -602,6 +606,10 @@ view: lk_h_retention {
     sql: ${TABLE}.broker_ind_cts ;;
     filters: {
       field: aauicl_hold_cts
+      value: "0"
+    }
+    filters: {
+      field: aauicl_ind_cts
       value: "0"
     }
   }
@@ -912,11 +920,11 @@ view: lk_h_retention {
     type:  sum
     sql: ${TABLE}.ly_premium_cts +${TABLE}.ly_commission_cts ;;
     filters: {
-      field: aauicl_hold_bds
+      field: aauicl_hold_cts
       value: "1"
     }
     filters: {
-      field: aauicl_ind_bds
+      field: aauicl_ind_cts
       value: "1"
     }
     value_format_name: gbp_0
@@ -1486,7 +1494,7 @@ view: lk_h_retention {
 
 
   measure: aauicl_ly_commission_share_of_ly_gross_premium {
-    label: "AAUICL LY Comission Share of LY Gross Premium"
+    label: "AAUICL LY Commission Share of LY Gross Premium"
     type: number
     sql: ${aauicl_ly_commission}/nullif(${aauicl_ly_gross_premium},0) ;;
     value_format_name: percent_1
@@ -1516,14 +1524,14 @@ view: lk_h_retention {
 
 
   measure: aauicl_ty_commission_share_of_ly_gross_premium {
-    label: "AAUICL TY Comission Share of LY Gross Premium"
+    label: "AAUICL TY Commission Share of LY Gross Premium"
     type: number
     sql: ${aauicl_ty_commission}/nullif(${aauicl_ly_gross_premium},0) ;;
     value_format_name: percent_1
   }
 
   measure: aauicl_ty_commission_share_of_ly_gross_premium_ren {
-    label: "AAUICL TY Comission Share of LY Gross Premium REN"
+    label: "AAUICL TY Commission Share of LY Gross Premium REN"
     type: number
     sql: ${aauicl_ty_commission_ren}/nullif(${aauicl_ly_gross_premium},0) ;;
     value_format_name: percent_1
@@ -1636,7 +1644,7 @@ view: lk_h_retention {
 
 
   measure: aauicl_ly_commission_share_of_ly_gross_premium_bds {
-    label: "AAUICL LY Comission Share of LY Gross Premium BDS"
+    label: "AAUICL LY Commission Share of LY Gross Premium BDS"
     type: number
     sql: ${aauicl_ly_commission_bds}/nullif(${aauicl_ly_gross_premium_bds},0) ;;
     value_format_name: percent_1
@@ -1666,14 +1674,14 @@ view: lk_h_retention {
 
 
   measure: aauicl_ty_commission_share_of_ly_gross_premium_bds {
-    label: "AAUICL TY Comission Share of LY Gross Premium BDS"
+    label: "AAUICL TY Commission Share of LY Gross Premium BDS"
     type: number
     sql: ${aauicl_ty_commission_bds}/nullif(${aauicl_ly_gross_premium_bds},0) ;;
     value_format_name: percent_1
   }
 
   measure: aauicl_ty_commission_share_of_ly_gross_premium_ren_bds {
-    label: "AAUICL TY Comission Share of LY Gross Premium REN BDS"
+    label: "AAUICL TY Commission Share of LY Gross Premium REN BDS"
     type: number
     sql: ${aauicl_ty_commission_ren_bds}/nullif(${aauicl_ly_gross_premium_bds},0) ;;
     value_format_name: percent_1
@@ -1783,7 +1791,7 @@ view: lk_h_retention {
 
 
   measure: aauicl_ly_commission_share_of_ly_gross_premium_cts {
-    label: "AAUICL LY Comission Share of LY Gross Premium CTS"
+    label: "AAUICL LY Commission Share of LY Gross Premium CTS"
     type: number
     sql: ${aauicl_ly_commission_cts}/nullif(${aauicl_ly_gross_premium_cts},0) ;;
     value_format_name: percent_1
@@ -1813,14 +1821,14 @@ view: lk_h_retention {
 
 
   measure: aauicl_ty_commission_share_of_ly_gross_premium_cts {
-    label: "AAUICL TY Comission Share of LY Gross Premium CTS"
+    label: "AAUICL TY Commission Share of LY Gross Premium CTS"
     type: number
     sql: ${aauicl_ty_commission_cts}/nullif(${aauicl_ly_gross_premium_cts},0) ;;
     value_format_name: percent_1
   }
 
   measure: aauicl_ty_commission_share_of_ly_gross_premium_ren_cts {
-    label: "AAUICL TY Comission Share of LY Gross Premium REN CTS"
+    label: "AAUICL TY Commission Share of LY Gross Premium REN CTS"
     type: number
     sql: ${aauicl_ty_commission_ren_cts}/nullif(${aauicl_ly_gross_premium_cts},0) ;;
     value_format_name: percent_1
@@ -2523,7 +2531,7 @@ view: lk_h_retention {
   measure: aauicl_average_net_premium_ty {
     label: "AAUICL Average Net Premium TY"
     type:  number
-    sql: sql: ${aauicl_ty_net_premium}/nullif(${aauicl_written},0) ;;
+    sql: ${aauicl_ty_net_premium}/nullif(${aauicl_written},0) ;;
     value_format_name: gbp_0
   }
 
@@ -2545,7 +2553,7 @@ view: lk_h_retention {
   measure: aauicl_average_commission_ty {
     label: "AAUICL Average Commission TY"
     type:  number
-    sql: sql: ${aauicl_ty_commission}/nullif(${aauicl_written},0) ;;
+    sql: ${aauicl_ty_commission}/nullif(${aauicl_written},0) ;;
     value_format_name: gbp_0
   }
 
@@ -2563,6 +2571,50 @@ view: lk_h_retention {
     value_format_name: gbp_0
   }
 
+
+
+
+  measure: aauicl_yoy_gross_premium_change_hol_gbp {
+    label: "AAUICL YoY Gross Premium Change HOL (£)"
+    type: number
+    sql: ${aauicl_average_gross_premium_ty_hol}-${aauicl_average_gross_premium_ly_hol} ;;
+    value_format_name: gbp_0
+  }
+
+  measure: aauicl_yoy_gross_premium_change_ren_gbp {
+    label: "AAUICL YoY Gross Premium Change REN (£)"
+    type: number
+    sql: ${aauicl_average_gross_premium_ty_ren}-${aauicl_average_gross_premium_ly_ren} ;;
+    value_format_name: gbp_0
+  }
+
+  measure: aauicl_yoy_net_premium_change_hol_gbp {
+    label: "AAUICL YoY Net Premium Change HOL (£)"
+    type: number
+    sql: ${aauicl_average_net_premium_ty_hol}-${aauicl_average_net_premium_ly_hol} ;;
+    value_format_name: gbp_0
+  }
+
+  measure: aauicl_yoy_net_premium_change_ren_gbp {
+    label: "AAUICL YoY Net Premium Change REN (£)"
+    type: number
+    sql: ${aauicl_average_net_premium_ty_ren}-${aauicl_average_net_premium_ly_ren} ;;
+    value_format_name: gbp_0
+  }
+
+  measure: aauicl_yoy_commission_change_hol_gbp {
+    label: "AAUICL YoY Commission Change HOL (£)"
+    type: number
+    sql: ${aauicl_average_commission_ty_hol}-${aauicl_average_commission_ly_hol} ;;
+    value_format_name: gbp_0
+  }
+
+  measure: aauicl_yoy_commission_change_ren_gbp {
+    label: "AAUICL YoY Commission Change REN (£)"
+    type: number
+    sql: ${aauicl_average_commission_ty_ren}-${aauicl_average_commission_ly_ren} ;;
+    value_format_name: gbp_0
+  }
 
 
 
