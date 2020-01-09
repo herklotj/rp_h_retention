@@ -361,8 +361,6 @@ view: lk_h_retention {
   dimension_group: policy_start {
     type: time
     timeframes: [
-      raw,
-      time,
       date,
       week,
       month,
@@ -371,7 +369,7 @@ view: lk_h_retention {
       fiscal_quarter,
       fiscal_year
     ]
-    sql: ${TABLE}.policy_start_date ;;
+    sql: to_timestamp(${TABLE}.policy_start_date) ;;
   }
 
   dimension: ren_ly_commission_bds {
