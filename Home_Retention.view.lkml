@@ -236,7 +236,7 @@ view: lk_h_retention {
       quarter,
       year
     ]
-    sql: ${TABLE}.load_dttm ;;
+    sql: to_timestamp(${TABLE}.load_dttm) ;;
   }
 
   dimension: ly_aa_membership {
@@ -426,6 +426,42 @@ view: lk_h_retention {
     type: string
     sql: ${TABLE}.uw_policy_no_ly ;;
   }
+
+
+  dimension: net_premium_yoy_change_ren_test {
+    description: "Net Premium YoY Change REN"
+    type: number
+    value_format_name: percent_0
+    sql: round(((${TABLE}.net_written_premium_bds+${TABLE}.net_written_premium_cts)/nullif((${TABLE}.ly_premium_bds+${TABLE}.ly_premium_cts),0)-1),2) ;;
+  }
+
+  dimension: net_premium_yoy_change_ren {
+    description: "Net Premium YoY Change REN"
+    type: tier
+    style:  interval
+    tiers: [-0.05,0,0.05,0.1,0.15,0.2,0.25,0.3]
+    value_format_name: percent_0
+    sql: round(((${TABLE}.net_written_premium_bds+${TABLE}.net_written_premium_cts)/nullif((${TABLE}.ly_premium_bds+${TABLE}.ly_premium_cts),0)-1),2) ;;
+  }
+
+  dimension: bds_net_premium_yoy_change_ren {
+    description: "Net Premium BDS YoY Change REN"
+    type: tier
+    style:  interval
+    tiers: [-0.05,0,0.05,0.1,0.15,0.2,0.25,0.3]
+    value_format_name: percent_0
+    sql: round(((${TABLE}.net_written_premium_bds)/nullif((${TABLE}.ly_premium_bds),0)-1),2) ;;
+  }
+
+  dimension: cts_net_premium_yoy_change_ren {
+    description: "Net Premium CTS YoY Change REN"
+    type: tier
+    style:  interval
+    tiers: [-0.05,0,0.05,0.1,0.15,0.2,0.25,0.3]
+    value_format_name: percent_0
+    sql: round(((${TABLE}.net_written_premium_cts)/nullif((${TABLE}.ly_premium_cts),0)-1),2) ;;
+  }
+
 
 ### Measures for Calc ###
 
@@ -2614,6 +2650,12 @@ view: lk_h_retention {
     value_format_name: gbp_0
   }
 
+  measure: data_updated {
+    label: "Data Updated As-At"
+    type: date_time
+    sql: max(${TABLE}.load_dttm);;
+
+  }
 
 
 
