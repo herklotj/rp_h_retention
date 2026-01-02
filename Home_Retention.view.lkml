@@ -1,5 +1,5 @@
 view: lk_h_retention {
-  sql_table_name: actian.lk_h_retention ;;
+  sql_table_name: dbuser.sas_h_retention ;;
 
   dimension: aauicl_cfi_ind {
     type: number
